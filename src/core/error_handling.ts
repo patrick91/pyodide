@@ -16,7 +16,7 @@ function ensureCaughtObjectIsError(e: any): Error {
   ) {
     // We caught something really weird. Be brave!
     let msg = `A value of type ${typeof e} with tag ${Object.prototype.toString.call(
-      e
+      e,
     )} was thrown as an error!`;
     try {
       msg += `\nString interpolation of the thrown value gives """${e}""".`;
@@ -68,7 +68,7 @@ API.fatal_error = function (e: any) {
   e.pyodide_fatal_error = true;
   fatal_error_occurred = true;
   console.error(
-    "Pyodide has suffered a fatal error. Please report this to the Pyodide maintainers."
+    "Pyodide has suffered a fatal error. Please report this to the Pyodide maintainers.",
   );
   console.error("The cause of the fatal error was:");
   if (API.inTestHoist) {
@@ -90,7 +90,7 @@ API.fatal_error = function (e: any) {
         configurable: true,
         get: () => {
           throw new Error(
-            "Pyodide already fatally failed and can no longer be used."
+            "Pyodide already fatally failed and can no longer be used.",
           );
         },
       });
@@ -154,12 +154,12 @@ function cppExceptionInfo(ptr: number): [string, boolean, number] {
   const exceptionThrowBuf = Module.stackAlloc(4);
   Module.HEAP32[exceptionThrowBuf / 4] = ptr;
   const exc_type_name = Module.demangle(
-    Module.UTF8ToString(Module._exc_typename(caught_exception_type))
+    Module.UTF8ToString(Module._exc_typename(caught_exception_type)),
   );
   const is_exception_subclass = !!Module.___cxa_can_catch(
     base_exception_type,
     caught_exception_type,
-    exceptionThrowBuf
+    exceptionThrowBuf,
   );
   const adjusted_ptr = Module.HEAP32[exceptionThrowBuf / 4];
   Module.stackRestore(stackTop);
@@ -318,7 +318,7 @@ class _PropagatePythonError extends Error {
     API.fail_test = true;
     super(
       "If you are seeing this message, an internal Pyodide error has " +
-        "occurred. Please report it to the Pyodide maintainers."
+        "occurred. Please report it to the Pyodide maintainers.",
     );
   }
 }

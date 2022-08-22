@@ -29,7 +29,7 @@ async function initializePackageIndex(lockFileURL: string) {
   }
   if (!repodata.packages) {
     throw new Error(
-      "Loaded repodata.json does not contain the expected key 'packages'."
+      "Loaded repodata.json does not contain the expected key 'packages'.",
     );
   }
   API.repodata_info = repodata.info;
@@ -83,7 +83,7 @@ function _uri_to_package_name(package_uri: string): string | undefined {
 function addPackageToLoad(
   name: string,
   toLoad: Map<string, string>,
-  toLoadShared: Map<string, string>
+  toLoadShared: Map<string, string>,
 ) {
   name = name.toLowerCase();
   if (toLoad.has(name)) {
@@ -119,7 +119,7 @@ function addPackageToLoad(
  */
 function recursiveDependencies(
   names: string[],
-  errorCallback: (err: string) => void
+  errorCallback: (err: string) => void,
 ) {
   const toLoad = new Map();
   const toLoadShared = new Map();
@@ -132,8 +132,8 @@ function recursiveDependencies(
     if (toLoad.has(pkgname) && toLoad.get(pkgname) !== name) {
       errorCallback(
         `Loading same package ${pkgname} from ${name} and ${toLoad.get(
-          pkgname
-        )}`
+          pkgname,
+        )}`,
       );
       continue;
     }
@@ -158,7 +158,7 @@ function recursiveDependencies(
  */
 async function downloadPackage(
   name: string,
-  channel: string
+  channel: string,
 ): Promise<Uint8Array> {
   let file_name, file_sub_resource_hash;
   if (channel === DEFAULT_CHANNEL) {
@@ -167,7 +167,7 @@ async function downloadPackage(
     }
     file_name = API.repodata_packages[name].file_name;
     file_sub_resource_hash = API.package_loader.sub_resource_hash(
-      API.repodata_packages[name].sha256
+      API.repodata_packages[name].sha256,
     );
   } else {
     file_name = channel;
@@ -177,7 +177,7 @@ async function downloadPackage(
     return await loadBinaryFile(
       API.config.indexURL,
       file_name,
-      file_sub_resource_hash
+      file_sub_resource_hash,
     );
   } catch (e) {
     if (!IN_NODE) {
@@ -185,17 +185,17 @@ async function downloadPackage(
     }
   }
   console.log(
-    `Didn't find package ${file_name}, attempting to load from ${cdnURL}`
+    `Didn't find package ${file_name}, attempting to load from ${cdnURL}`,
   );
   // If we are IN_NODE, download the package from the cdn, then stash it into
   // the node_modules directory for future use.
   let binary = await loadBinaryFile(cdnURL, file_name);
   console.log(
-    `Package ${file_name} loaded from ${cdnURL}, caching the wheel in node_modules for future use.`
+    `Package ${file_name} loaded from ${cdnURL}, caching the wheel in node_modules for future use.`,
   );
   await nodeFsPromisesMod.writeFile(
     `${API.config.indexURL}${file_name}`,
-    binary
+    binary,
   );
   return binary;
 }
@@ -209,7 +209,7 @@ async function downloadPackage(
 async function installPackage(
   name: string,
   buffer: Uint8Array,
-  channel: string
+  channel: string,
 ) {
   let pkg = API.repodata_packages[name];
   if (!pkg) {
@@ -280,7 +280,7 @@ async function loadDynlib(lib: string, shared: boolean) {
   let byteArray;
   if (node.mount.type == Module.FS.filesystems.MEMFS) {
     byteArray = Module.FS.filesystems.MEMFS.getFileDataAsTypedArray(
-      Module.FS.lookupPath(lib).node
+      Module.FS.lookupPath(lib).node,
     );
   } else {
     byteArray = Module.FS.readFile(lib);
@@ -316,7 +316,7 @@ async function loadDynlib(lib: string, shared: boolean) {
   } catch (e: any) {
     if (e && e.message && e.message.includes("need to see wasm magic number")) {
       console.warn(
-        `Failed to load dynlib ${lib}. We probably just tried to load a linux .so file or something.`
+        `Failed to load dynlib ${lib}. We probably just tried to load a linux .so file or something.`,
       );
       return;
     }
@@ -349,7 +349,7 @@ const acquirePackageLock = createLock();
 export async function loadPackage(
   names: string | PyProxy | Array<string>,
   messageCallback?: (msg: string) => void,
-  errorCallback?: (msg: string) => void
+  errorCallback?: (msg: string) => void,
 ) {
   messageCallback = messageCallback || console.log;
   errorCallback = errorCallback || console.error;
@@ -377,7 +377,7 @@ export async function loadPackage(
       errorCallback(
         `URI mismatch, attempting to load package ${pkg} from ${uri} ` +
           `while it is already loaded from ${loaded}. To override a dependency, ` +
-          `load the custom package first.`
+          `load the custom package first.`,
       );
     }
   }

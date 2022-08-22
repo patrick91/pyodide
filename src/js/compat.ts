@@ -80,7 +80,7 @@ export async function initNodeModules() {
 async function node_loadBinaryFile(
   indexURL: string,
   path: string,
-  _file_sub_resource_hash?: string | undefined // Ignoring sub resource hash. See issue-2431.
+  _file_sub_resource_hash?: string | undefined, // Ignoring sub resource hash. See issue-2431.
 ): Promise<Uint8Array> {
   if (!path.startsWith("/") && !path.includes("://")) {
     // If path starts with a "/" or starts with a protocol "blah://", we
@@ -119,7 +119,7 @@ async function node_loadBinaryFile(
 async function browser_loadBinaryFile(
   indexURL: string,
   path: string,
-  subResourceHash: string | undefined
+  subResourceHash: string | undefined,
 ): Promise<Uint8Array> {
   // @ts-ignore
   const base = new URL(indexURL, location);
@@ -137,7 +137,7 @@ async function browser_loadBinaryFile(
 export let loadBinaryFile: (
   indexURL: string,
   path: string,
-  file_sub_resource_hash?: string | undefined
+  file_sub_resource_hash?: string | undefined,
 ) => Promise<Uint8Array>;
 if (IN_NODE) {
   loadBinaryFile = node_loadBinaryFile;
